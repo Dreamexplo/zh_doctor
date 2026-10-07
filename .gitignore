@@ -1,0 +1,23 @@
+# 依赖
+node_modules/
+bower_components/
+
+# 构建产物
+dist/
+build/
+out/
+.cache/
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 临时文件
+*.tmp
+*.temp
+temp/

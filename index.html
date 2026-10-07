@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灵枢·经络 —— 古风人体经络穴位互动视觉应用</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bgfx"></div>
+
+<div class="app">
+
+  <!-- ============ 顶栏 ============ -->
+  <header>
+    <div class="seal">灵枢</div>
+    <div class="brand">
+      <h1>经络·灵枢</h1>
+      <span class="sub">HUMAN MERIDIAN · ACUPOINT ATLAS</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="hint">拖拽旋转 · 滚轮缩放 · 点击穴位或经络 · 右侧可施刺激并观反馈</div>
+  </header>
+
+  <!-- ============ 主体 ============ -->
+  <main>
+
+    <!-- ---------- 左栏 ---------- -->
+    <aside class="left">
+      <div class="grp">
+        <h3>寻 穴</h3>
+        <div class="search-wrap">
+          <input class="search" id="searchBox" placeholder="输入穴名 / 代号 / 特定穴，如 合谷、LI4、原穴">
+          <div id="searchRes"></div>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3>观 察 角 度</h3>
+        <div class="row">
+          <button class="btn on" id="viewFront" data-view>正面</button>
+          <button class="btn" id="viewBack" data-view>背面</button>
+          <button class="btn" id="viewLeft" data-view>左侧</button>
+          <button class="btn" id="viewRight" data-view>右侧</button>
+          <button class="btn" id="viewTop" data-view>俯视</button>
+          <button class="btn" id="viewIso" data-view>斜视</button>
+          <button class="btn" id="viewFit">复位</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3>人 体 模 型</h3>
+        <div class="row">
+          <button class="btn on" id="genderMale" data-gender>男体</button>
+          <button class="btn" id="genderFemale" data-gender>女体</button>
+          <button class="btn" id="genderBoth" data-gender>男女对照</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3>显 示 层 级</h3>
+        <div class="row">
+          <button class="btn on" id="tglLines">经络线</button>
+          <button class="btn" id="tglPoints">全穴点</button>
+          <button class="btn on" id="tglBoth">左右双侧</button>
+          <button class="btn" id="tglOrgans">脏腑透视</button>
+          <button class="btn" id="tglRotate">自动旋转</button>
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3>解 剖 层 · 现 代 医 学</h3>
+        <div class="row">
+          <button class="btn" id="anatNerve">神经层</button>
+          <button class="btn" id="anatVessel">血管层</button>
+          <button class="btn" id="anatMuscle">筋腱肌肉层</button>
+          <button class="btn" id="anatOrgan">器官层</button>
+          <button class="btn on" id="anatMeridian">经络穴位层</button>
+        </div>
+        <div class="row" style="margin-top:7px;align-items:center">
+          <span style="font-size:11px;color:#8b8168;white-space:nowrap">层透明度</span>
+          <input type="range" id="anatOp" min="15" max="100" value="80" style="flex:1;min-width:80px">
+        </div>
+        <div class="legend" style="margin-top:6px">
+          可分别显示或任意叠加同显；开启后表皮自动半透明以便透视
+        </div>
+      </div>
+
+      <div class="grp">
+        <h3>十 四 经 络 <span style="color:#8b8168;font-size:10.5px;letter-spacing:0">已激活 <b id="activeCount" style="color:#d9b568">0</b> 条</span></h3>
+        <div id="merList"></div>
+      </div>
+
+      <div class="grp">
+        <h3>图 例</h3>
+        <div class="legend">
+          <b>亮线</b>：已激活经络　<b>暗线</b>：未激活<br>
+          <b>圆点</b>：本经腧穴　<b>金环</b>：关联穴位<br>
+          <b>光流</b>：刺激后经气传导演示<br>
+          <b>点击线</b>：切换该经激活状态
+        </div>
+      </div>
+    </aside>
+
+    <!-- ---------- 舞台 ---------- -->
+    <section id="stage">
+      <canvas id="scene"></canvas>
+      <div class="stage-title">经 络 者 · 所 以 决 死 生 · 处 百 病</div>
+      <div id="tooltip"></div>
+      <div class="hud">
+        <div class="breath-wrap">
+          <div id="breath" style="transform:scale(0.8);opacity:.3"></div>
+          <div id="breathLabel">息</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- 右栏 ---------- -->
+    <aside class="right">
+      <div class="tabs">
+        <div class="tab on" data-tab="point">穴 位</div>
+        <div class="tab" data-tab="meridian">经 络 百 科</div>
+        <div class="tab" data-tab="anatomy">解 剖 对 照</div>
+        <div class="tab" data-tab="feedback">刺 激 反 馈</div>
+      </div>
+
+      <div class="tabpane on" id="pane-point">
+        <div id="wikiPoint"></div>
+      </div>
+
+      <div class="tabpane" id="pane-meridian">
+        <div id="wikiMeridian"></div>
+      </div>
+
+      <div class="tabpane" id="pane-anatomy">
+        <div id="wikiAnatomy"></div>
+      </div>
+
+      <div class="tabpane" id="pane-feedback">
+        <div style="text-align:right;margin-bottom:8px">
+          <button class="btn" id="btnReset">清除刺激</button>
+        </div>
+        <div id="wikiFeedback">
+          <p class="dim" style="line-height:1.9">
+            尚未施加刺激。<br>
+            请先在左侧选经、或在立体人体上点选任一穴位，点击「施以刺激 · 观察经络反馈」，即可观察经气沿经络传导、内应脏腑、外联表里经与关联腧穴的完整推演过程。
+          </p>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ============ 底部配音条 ============ -->
+  <footer>
+    <button id="btnMed">▶ 播放冥想引导</button>
+    <div class="med-count" id="medIndex">0 / 0</div>
+    <div class="med-track"><div id="medBar"></div></div>
+    <div id="medText">静心调息，气血自和。</div>
+    <div class="vol-wrap">音 <input type="range" id="vol" min="0" max="100" value="70"></div>
+  </footer>
+</div>
+
+<!-- ============ 音频资源：古琴冥想配乐 + 穴位磬声 ============ -->
+<audio id="bgm" loop preload="auto">
+  <source src="assets/bgm-meditation.m4a" type="audio/mp4">
+  <source src="assets/bgm-meditation.wav" type="audio/wav">
+</audio>
+<audio id="sfxChime" preload="auto" src="assets/sfx-chime.wav"></audio>
+
+<script src="js/data.js"></script>
+<script src="js/engine3d.js"></script>
+<script src="js/body.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
